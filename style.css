@@ -1,0 +1,42 @@
+body {
+    font-family: Helvetica, Arial;
+    margin: 0; 
+    padding-top: 5rem;
+}
+#game-container {
+    background-color: purple;
+    width: 80vw; 
+    max-width: 60rem; 
+    height: 70vh; 
+    min-height: 40rem;
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: none; 
+    border-radius: 2rem;
+    margin: auto; 
+}
+#game-board {
+    height: 80%; 
+    width: 80%; 
+    background-color: white;
+    display: grid; 
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+#game-board .row {
+    display: grid; 
+    grid-template-columns: 1fr 1fr 1fr;
+    
+}
+
+#game-board .square {
+    border: 1px solid; 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    height: 100%; 
+    width: 100%; 
+    font-size: 5rem; 
+}
