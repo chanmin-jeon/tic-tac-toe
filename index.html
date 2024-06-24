@@ -8,7 +8,12 @@
 </head>
 <body>
     <section id="game-container">
-        <div id="info-display"></div>
+        <div id="info-display">
+            <div class="player-info-1">
+            </div>
+            <div class="player-info-2">
+            </div>
+        </div>
         <div id="game-board"></div>
     </section>
     <dialog id="player-modal">
@@ -28,12 +33,15 @@
         </form>
     </dialog>
     <dialog id="replay-game">
-        <div id="game-over-message"></div>
         <form id="replay-form">
-            <legend>Play Again?</legend>
-            <button id='replay-btn' type="submit">
-                Yes!
-            </button>
+            <legend id="game-over-message">
+            </legend>
+            <div>Play Again?</div>
+            <div>
+                <button id='replay-btn' type="submit">
+                    Yes!
+                </button>
+            </div>
         </form>
     </dialog>
     <script src="script.js"></script>

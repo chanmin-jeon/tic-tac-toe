@@ -8,12 +8,44 @@ const gameBoard = ( () => {
         for (let i = 0; i < 3; i++) {
             let rowArray = []; 
             let rowDisplay = document.createElement('div'); 
-            rowDisplay.classList.toggle('row'); 
+            rowDisplay.classList.add('row'); 
             for (let j = 0; j < 3; j++) {
                 let squareDisplay = document.createElement('div'); 
-                squareDisplay.classList.toggle('square'); 
-                squareDisplay.setAttribute('data-pressed','empty');
+                squareDisplay.classList.add('square'); 
+                squareDisplay.setAttribute('data-pressed', 'empty');
                 squareDisplay.textContent = ''; 
+                // Base border style for internal borders
+                let border = 'border: 5px solid purple;';
+    
+                // Remove borders for edge squares
+                if (i === 0) {
+                    border += ' border-top: none;';
+                    if (j === 0) {
+                        border += ' border-left: none;'
+                    } 
+                    if (j === 2) {
+                        border += ' border-right: none'
+                    }
+                } 
+                if (i === 1) {
+                    if (j === 0) {
+                        border += ' border-left: none;'
+                    } 
+                    if (j === 2) {
+                        border += ' border-right: none'
+                    }
+                }
+                if (i === 2) {
+                    border += ' border-bottom: none;';
+                    if (j === 0) {
+                        border += ' border-left: none;'
+                    } 
+                    if (j === 2) {
+                        border += ' border-right: none'
+                    }
+                }
+                squareDisplay.style.cssText = border; 
+
                 rowArray.push(squareDisplay);
                 rowDisplay.append(squareDisplay); 
             }
@@ -33,6 +65,8 @@ const gameBoard = ( () => {
             (gameArray[2][0].textContent === userMarker && gameArray[2][1].textContent === userMarker && gameArray[2][2].textContent === userMarker) ||
             (gameArray[2][2].textContent === userMarker && gameArray[1][2].textContent === userMarker && gameArray[0][2].textContent === userMarker) ||
             (gameArray[0][0].textContent === userMarker && gameArray[1][1].textContent === userMarker && gameArray[2][2].textContent === userMarker) ||
+            (gameArray[1][0].textContent === userMarker && gameArray[1][1].textContent === userMarker && gameArray[1][2].textContent === userMarker) ||
+            (gameArray[0][1].textContent === userMarker && gameArray[1][1].textContent === userMarker && gameArray[2][1].textContent === userMarker) ||
             (gameArray[2][0].textContent === userMarker && gameArray[1][1].textContent === userMarker && gameArray[0][2].textContent === userMarker)) {
                 gameWon = true; 
             }
@@ -84,9 +118,13 @@ const gameController = ( () => {
             playersArray.push(player2); 
             document.querySelector('#player-modal').close(); 
             document.querySelector('#player-form').reset(); 
+            const player1Info = document.querySelector('.player-info-1'); 
+            player1Info.textContent = `${playersArray[0].name}: ${playersArray[0].marker}`; 
+            const player2Info = document.querySelector('.player-info-2'); 
+            player2Info.textContent = `${playersArray[1].name}: ${playersArray[1].marker}`; 
         });
-    
     }
+
     const playGame = () => {
         for (let i = 0; i < 3; i++){
             for (let j = 0; j < 3; j++){
@@ -96,23 +134,24 @@ const gameController = ( () => {
                         if (currentSquare.getAttribute('data-pressed') !== 'empty') {
                             alert(`Square has already been clicked!\nPlease choose another square`); 
                         } else {
-                            currentSquare.setAttribute('style','background-color:lightgrey');
                             currentSquare.textContent = `${currentPlayer.marker}`;  
                             currentSquare.setAttribute('data-pressed',`${currentPlayer.name}`); 
                         }
-                        if (gameBoard.checkTie() === true || gameBoard.checkWin(currentPlayer.marker) === true) {
-                            if (gameBoard.checkTie()) {
-                                playersArray = []; 
-                                currentPlayerIndex =  0;
-                                resetGame('tie', null); 
-                            } else {
-                                playersArray = []; 
-                                currentPlayerIndex =  0;
-                                resetGame('win', currentPlayer.name); 
-                            }
+                        let tieGame = gameBoard.checkTie(); 
+                        let gameWon = gameBoard.checkWin(currentPlayer.marker); 
+                        if (tieGame) {
+                            playersArray = []; 
+                            currentPlayerIndex = 0; 
+                            resetGame('tie', 'no winner');
+                        } else if (gameWon) {
+                            playersArray = []; 
+                            currentPlayerIndex = 0;
+                            resetGame('win',currentPlayer.name);
                         }
-                        currentPlayerIndex += 1; 
-                        currentPlayerIndex = currentPlayerIndex % 2; 
+                        else {
+                            currentPlayerIndex += 1; 
+                            currentPlayerIndex = currentPlayerIndex % 2; 
+                        }
                 })
             }
         }
@@ -125,8 +164,7 @@ const gameController = ( () => {
         const newGameForm = document.querySelector('#replay-form'); 
         if (winCondition === 'tie') {
             gameOverMessage.textContent = 'Tie Game'
-        }
-        else if (winCondition === 'win') {
+        } else {
             gameOverMessage.textContent = `${winner} has won the game!`; 
         }
         newGameModal.showModal(); 
@@ -135,6 +173,8 @@ const gameController = ( () => {
             newGameModal.close(); 
             newGameForm.reset(); 
             gameBoard.resetBoard(); 
+            document.querySelector('.player-info-1').textContent = ''; 
+            document.querySelector('.player-info-2').textContent = ''; 
             gameController.startGame(); 
             gameController.playGame(); 
 
